@@ -1,0 +1,29 @@
+- hosts: all
+  become: yes
+  tasks:
+      - name: Install dependencies
+        apt:
+            name:
+                - dkms
+
+      - name: Download runfile
+        get_url:
+            url: https://developer.nvidia.com/compute/cuda/10.1/Prod/local_installers/cuda_10.1.168_418.67_linux.run
+            dest: /tmp/
+            mode: 0700
+
+      - name: Install CUDA
+        shell: |
+            sh /tmp/cuda_10.1.168_418.67_linux.run --silent
+
+      - name: Check installation result
+        shell: |
+            cat /var/log/nvidia-installer.log | grep "now complete"
+        register: ecode
+
+      - name: check installation
+        debug: var=ecode
+
+      - name: load nvidia
+        shell: |
+          modprobe nvidia
