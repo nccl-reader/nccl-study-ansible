@@ -1,0 +1,27 @@
+- hosts: all
+  become: yes
+  tasks:
+      - name: Install environment modules
+        apt:
+            name:
+                - environment-modules
+
+      - name: Create CUDA 10.1 module directory if it does not exist
+        file:
+            path: /usr/share/modules/modulefiles/cuda
+            state: directory
+            mode: '0755'
+
+      - name: Create CUDA 10.1 module file
+        copy:
+            dest: /usr/share/modules/modulefiles/cuda/10.1
+            content: |
+                #%Module
+                conflict cuda
+                set ver 10.1
+                set modroot /usr/local/cuda-$ver
+                prepend-path PATH            $modroot/bin
+                prepend-path LD_LIBRARY_PATH $modroot/lib64
+                prepend-path LIBRARY_PATH    $modroot/lib64
+                prepend-path C_INCLUDE_PATH  $modroot/lib64
+
