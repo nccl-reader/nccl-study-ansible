@@ -21,9 +21,13 @@
             cat /var/log/nvidia-installer.log | grep "now complete"
         register: ecode
 
-      - name: check installation
-        debug: var=ecode
+      - debug: var=ecode
 
-      - name: load nvidia
+      - name: Load nvidia module
         shell: |
           modprobe nvidia
+
+      - name: Cleanup
+        file:
+          path: /tmp/cuda_10.1.168_418.67_linux.run
+          state: absent
