@@ -1,0 +1,60 @@
+- hosts: all
+  become: yes
+  tasks:
+      - name: Download the driver
+        get_url:
+            url: http://www.mellanox.com/downloads/ofed/nvidia-peer-memory_1.0-8.tar.gz
+            dest: /tmp/
+            mode: 0744
+
+      - name: Extract
+        unarchive:
+            src: /tmp/nvidia-peer-memory_1.0-8.tar.gz
+            dest: /tmp
+            remote_src: yes
+
+      - name: Build the module
+        shell: |
+            ./build_module.sh
+        args:
+            chdir: /tmp/nvidia-peer-memory-1.0
+
+      - name: Install the driver [Extract]
+        unarchive:
+            src: /tmp/nvidia-peer-memory_1.0.orig.tar.gz
+            dest: /tmp
+            remote_src: yes
+
+      - name: Install the driver [Build package]
+        shell: |
+            dpkg-buildpackage -us -uc
+        args:
+            chdir: /tmp/nvidia-peer-memory-1.0
+
+      - name: Install the driver [Install]
+        shell: |
+            dpkg -i nvidia-peer-memory_1.0-8_all.deb
+        args:
+            chdir: /tmp
+
+      - name: Reload the driver
+        systemd:
+            name: nv_peer_mem
+            state: reloaded
+        register: service_result
+
+      - debug: var=service_result
+
+      - name: Remove the extracted files
+        file:
+            path: "{{ item }}"
+            state: absent
+        with_items:
+            - /tmp/nvidia-peer-memory-dkms_1.0-8_all.deb
+            - /tmp/nvidia-peer-memory_1.0-8.debian.tar.xz
+            - /tmp/nvidia-peer-memory_1.0-8.dsc
+            - /tmp/nvidia-peer-memory_1.0-8.tar.gz
+            - /tmp/nvidia-peer-memory_1.0-8_all.deb
+            - /tmp/nvidia-peer-memory_1.0-8_amd64.changes
+            - /tmp/nvidia-peer-memory_1.0.orig.tar.gz
+            - /tmp/nvidia-peer-memory-1.0
