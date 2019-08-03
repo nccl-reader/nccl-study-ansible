@@ -33,7 +33,7 @@
 
       - name: Install the driver [Install]
         shell: |
-            dpkg -i nvidia-peer-memory_1.0-8_all.deb
+            dpkg -i nvidia-peer-memory_1.0-8_all.deb nvidia-peer-memory-dkms_1.0-8_all.deb
         args:
             chdir: /tmp
 
