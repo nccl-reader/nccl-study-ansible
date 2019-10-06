@@ -1,0 +1,16 @@
+- hosts: all
+  vars:
+    - username: enp1s0
+    - repository_url: https://gitlab.momo86.net/mutsuki/nccl
+
+  tasks:
+      - name: Clone repository
+        git:
+          repo: '{{ repository_url }}'
+          dest: /home/{{ username }}/mynccl
+
+      - name: Build
+        shell: |
+            make -j src.build
+        args:
+            chdir: /home/{{ username }}/mynccl
