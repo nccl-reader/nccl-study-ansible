@@ -13,7 +13,7 @@ ansible-playbook -i hosts playbooks/xxxx.yml -K
     - repository_url: https://gitlab.momo86.net/mutsuki/nccl
     - repository_branch: master
 ```
-0. Run `ansible-playbook`
+1. Run `ansible-playbook`
 ```
-ansible-playbook -i hosts playbooks/mynccl.yml
+$ ansible-playbook -i hosts playbooks/mynccl.yml
 ```
