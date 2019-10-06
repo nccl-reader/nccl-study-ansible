@@ -12,7 +12,7 @@ ansible-playbook -i hosts playbooks/xxxx.yml -K
     - username: enp1s0
     - repository_url: https://gitlab.momo86.net/mutsuki/nccl
     - repository_branch: master
-	- shell_config: .bashrc
+    - shell_config: .bashrc
 ```
 1. Run `ansible-playbook`
 ```
