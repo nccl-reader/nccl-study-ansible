@@ -2,15 +2,38 @@
   vars:
     - username: enp1s0
     - repository_url: https://gitlab.momo86.net/mutsuki/nccl
+    - repository_branch: master
+    - shell_config: .bashrc
 
   tasks:
       - name: Clone repository
         git:
           repo: '{{ repository_url }}'
           dest: /home/{{ username }}/mynccl
+          version: '{{ repository_branch }}'
 
       - name: Build
         shell: |
             make -j src.build
         args:
             chdir: /home/{{ username }}/mynccl
+
+      - name: Add NCCL include path to CPATH
+        lineinfile:
+          path: /home/{{ username }}/{{ shell_config }}
+          line: 'export CPATH=/home/{{ username }}/mynccl/build/include:$CPATH'
+
+      - name: Add NCCL lib path to LD_LIBRARY_PATH
+        lineinfile:
+          path: /home/{{ username }}/{{ shell_config }}
+          line: 'export LD_LIBRARY_PATH=/home/{{ username }}/mynccl/build/lib:$LD_LIBRARY_PATH'
+
+      - name: Add NCCL lib path to LIBRARY_PATH
+        lineinfile:
+          path: /home/{{ username }}/{{ shell_config }}
+          line: 'export LIBRARY_PATH=/home/{{ username }}/mynccl/build/lib:$LIBRARY_PATH'
+
+      - name: Add NCCL root path to NCCL_HOME
+        lineinfile:
+          path: /home/{{ username }}/{{ shell_config }}
+          line: 'export NCCL_HOME=/home/{{ username }}/mynccl'
