@@ -6,6 +6,10 @@
     - shell_config: .bashrc
 
   tasks:
+      - name: Clear old repository
+        file:
+          path: /home/{{ username }}/mynccl
+          state: absent
       - name: Clone repository
         git:
           repo: '{{ repository_url }}'
