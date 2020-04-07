@@ -10,6 +10,7 @@
         file:
           path: /home/{{ username }}/mynccl
           state: absent
+
       - name: Clone repository
         git:
           repo: '{{ repository_url }}'
